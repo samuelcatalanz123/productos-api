@@ -1,0 +1,6 @@
+# Archivos que NO deben entrar en la imagen de Docker.
+.git
+*.log
+servidor
+api
+README.md

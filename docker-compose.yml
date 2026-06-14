@@ -1,0 +1,30 @@
+# Levanta dos servicios juntos: la base de datos (db) y tu API (api).
+# Comando: docker compose up --build
+services:
+  # --- Base de datos MySQL ---
+  db:
+    image: mysql:8
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes" # solo para desarrollo
+      MYSQL_DATABASE: tienda            # crea la base de datos automáticamente
+    ports:
+      - "3306:3306"
+    healthcheck:
+      # Comprobamos que MySQL esté listo antes de arrancar la API.
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # --- Tu API en Go ---
+  api:
+    build: . # construye con el Dockerfile de esta carpeta
+    environment:
+      # Dentro de Docker, MySQL se llama "db" (el nombre del servicio), no localhost.
+      DB_DSN: "root@tcp(db:3306)/tienda"
+      JWT_SECRET: "cambia-esta-clave-en-produccion"
+    ports:
+      - "8080:8080"
+    depends_on:
+      db:
+        condition: service_healthy # espera a que MySQL esté listo

@@ -1,0 +1,14 @@
+# Binarios compilados
+servidor
+api
+*.exe
+
+# Logs
+*.log
+
+# Variables de entorno y secretos
+.env
+*.env
+
+# Archivos del sistema
+.DS_Store
